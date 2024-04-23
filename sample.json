@@ -1,0 +1,7 @@
+{
+    "topic": "my-topic",
+    "tlsAllowInsecureConnection": "true",
+    "tlsHostnameVerificationEnable": "false",
+    "brokerServiceUrl": "pulsar://localhost:6650"
+}
+

@@ -34,7 +34,7 @@ public class ManySubscriptionsEmulatedTx
         Map<String, Object> producerConfig = new HashMap<>();
         producerConfig.put("batchingEnabled", false);
         try (PulsarConnectionFactory factory = new PulsarConnectionFactory(
-        ImmutableMap.of("jms.useServerSideFiltering", "true", "jms.clientId", "test", "producerConfig", producerConfig, "jms.emulateTransactions", true ));) {
+        ImmutableMap.of("enableTransaction", true, "jms.useServerSideFiltering", "true", "jms.clientId", "test", "producerConfig", producerConfig, "jms.emulateTransactions", false ));) {
 
             Topic topic1;
             try (JMSContext jmsContext = factory.createContext()) {
@@ -67,7 +67,7 @@ public class ManySubscriptionsEmulatedTx
             dumpStats(factory, topic1);
 
 
-            int numberMessages = 1_000_000;
+            int numberMessages = 1000;
             // generate messages
             Random random = new Random(1431);
             try (JMSContext jmsContext = factory.createContext(JMSContext.SESSION_TRANSACTED))
@@ -150,7 +150,7 @@ public class ManySubscriptionsEmulatedTx
     private static void consume(PulsarConnectionFactory factory, Topic topic, String name, int numMessages) throws Exception
     {
         String selector = Objects.requireNonNull(SELECTORS.get(name));
-        try (JMSContext context = factory.createContext(JMSContext.CLIENT_ACKNOWLEDGE);
+        try (JMSContext context = factory.createContext(JMSContext.SESSION_TRANSACTED);
              JMSConsumer consumer = context.createSharedDurableConsumer(topic, name);)
         {
             TopicStats internalStats = factory.getPulsarAdmin().topics().getStats(topic.getTopicName());
@@ -177,6 +177,7 @@ public class ManySubscriptionsEmulatedTx
                     message.acknowledge();
                     count++;
                 }
+                context.commit();
                 return;
             }
 
