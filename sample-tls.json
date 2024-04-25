@@ -1,0 +1,9 @@
+{
+    "topic": "my-topic",
+    "tlsAllowInsecureConnection": "true",
+    "tlsHostnameVerificationEnable": "false",
+    "brokerServiceUrl": "pulsar+ssl://localhost:6651",
+    "authPlugin":"org.apache.pulsar.client.impl.auth.AuthenticationToken",
+    "authParams":"token:eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiJ9.r8VN05PaNHePVZ5CE_CsunGqh0tliPYD96iUrM8eQ_s"
+}
+
